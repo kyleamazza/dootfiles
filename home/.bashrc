@@ -1,16 +1,17 @@
-PATH=/Users/kyleamazza/.cargo/bin:/Users/kyleamazza/.cabal/bin:/Users/kyleamazza/.ghcup/bin:/Users/kyleamazza/.local/bin:/Users/kyleamazza/.swiftenv/shims:/usr/local/bin:/Users/kyleamazza/.yarn/bin:/Users/kyleamazza/.config/yarn/global/node_modules/.bin:/Users/kyleamazza/.rbenv/shims:/Users/kyleamazza/.rbenv/shims:/Users/kyleamazza/.rbenv/bin:/Users/kyleamazza/.nvm/versions/node/v10.16.3/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/go/bin
+PATH=/Users/kyleamazza/.cargo/bin:/Users/kyleamazza/.cabal/bin:/Users/kyleamazza/.ghcup/bin:/Users/kyleamazza/.local/bin:/Users/kyleamazza/.swiftenv/shims:/usr/local/bin:/Users/kyleamazza/.yarn/bin:/Users/kyleamazza/.config/yarn/global/node_modules/.bin:/Users/kyleamazza/.rbenv/shims:/Users/kyleamazza/.rbenv/shims:/Users/kyleamazza/.rbenv/bin:/Users/kyleamazza/.nvm/versions/node/v10.16.3/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/go/bin:$GOPATH/bin:/Users/kyleamazza/.asdf/installs/rust/1.38.0/bin:/Users/kyleamazza/.gogs/bin/gogs:/usr/local/opt/sqlite/bin:/Users/kyleamazza/.local/bin/redis-cluster-playground
 
 export PATH="/Users/kyleamazza/.pyenv/bin:$PATH"
 eval "$(pyenv init -)"
 eval "$(pyenv virtualenv-init -)"
 
-export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+# Erlang asdf plugin
+export KERL_CONFIGURE_OPTIONS="--disable-debug --without-javac"
 
 # Auto 'cd's into directory if the argument is not a command
-shopt autocd
+shopt -s autocd
 
+###################
+### BEGIN ALIASES
 alias q="exit"
 
 # Runs last command as sudo (NOTE: `sudo !!` also does this, but it's not as fun...
@@ -31,17 +32,34 @@ alias fgrep='fgrep --color=auto'
 # history
 alias hgrep='history | grep'
 
+# SQLite
+alias sqlite="sqlite3"
+
 # Get ports
 alias ports='ss -nutpal'
+
+# Podman
+# alias docker='podman' # Not feasible currently, needs a Linux VM running somewhere plus configuration
 
 alias doc='cd ~/Documents'
 alias proj='cd ~/Documents/projects'
 alias ss='cd ~/Documents/self-study'
 
-alias ..='cd ../'
-
 export BOOKS="~/Documents/books"
 alias books="cd $BOOKS"
+
+# RabbitMQ via Docker
+alias ribbit='docker run -d -p 5672:5672 --name ribbit rabbitmq:3.8.0'
+alias pg='docker run -d -p 5432:5432 --name pg postgres:12.1'
+
+# Yarn because I'm lazy
+alias ya='yarn add'
+alias yad='yarn add -D'
+alias yr='yarn remove'
+alias yi='yarn install'
+
+### END ALIASES
+###################
 
 export VISUAL=vim
 export EDITOR="$VISUAL"
@@ -50,6 +68,12 @@ export VIRTUALENVWRAPPER_PYTHON="/Users/kyleamazza/.pyenv/versions/3.8.0/bin/pyt
 export WORKON_HOME=$HOME/.virtualenvs
 export PROJECT_HOME=$HOME/Documents/projects
 source /usr/local/bin/virtualenvwrapper.sh
+
+# Go
+export GOPATH=$HOME/go # Default GOPATH
+goget() {
+  go get "$@" && asdf reshim golang
+}
 
 if which rbenv > /dev/null; then eval "$(rbenv init -)"; fi
 eval "$(rbenv init -)"
@@ -136,3 +160,6 @@ function ps1 {
 source "$HOME/.homesick/repos/homeshick/homeshick.sh"
 
 if which swiftenv > /dev/null; then eval export PATH="/Users/kyleamazza/.swiftenv/shims:${PATH}" command swiftenv rehash 2>/dev/null source '/usr/local/Cellar/swiftenv/1.4.0/bin/../libexec/../completions/swiftenv.bash'; fi
+export PATH="/usr/local/sbin:$PATH"
+
+. $HOME/.asdf/asdf.sh
