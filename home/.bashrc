@@ -1,8 +1,14 @@
-PATH=/Users/kyleamazza/.cargo/bin:/Users/kyleamazza/.cabal/bin:/Users/kyleamazza/.ghcup/bin:/Users/kyleamazza/.local/bin:/Users/kyleamazza/.swiftenv/shims:/usr/local/bin:/Users/kyleamazza/.yarn/bin:/Users/kyleamazza/.config/yarn/global/node_modules/.bin:/Users/kyleamazza/.rbenv/shims:/Users/kyleamazza/.rbenv/shims:/Users/kyleamazza/.rbenv/bin:/Users/kyleamazza/.nvm/versions/node/v10.16.3/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/go/bin:$GOPATH/bin:/Users/kyleamazza/.asdf/installs/rust/1.38.0/bin:/Users/kyleamazza/.gogs/bin/gogs:/usr/local/opt/sqlite/bin:/Users/kyleamazza/.local/bin/redis-cluster-playground
+PATH=/Users/kyleamazza/.cargo/bin:/Users/kyleamazza/.cabal/bin:/Users/kyleamazza/.ghcup/bin:/Users/kyleamazza/.local/bin:/Users/kyleamazza/.swiftenv/shims:/usr/local/bin:/Users/kyleamazza/.yarn/bin:/Users/kyleamazza/.config/yarn/global/node_modules/.bin:/Users/kyleamazza/.rbenv/shims:/Users/kyleamazza/.rbenv/shims:/Users/kyleamazza/.rbenv/bin:/Users/kyleamazza/.nvm/versions/node/v10.16.3/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/go/bin:$GOPATH/bin:/Users/kyleamazza/.asdf/installs/rust/1.38.0/bin:/Users/kyleamazza/.gogs/bin/gogs:/usr/local/opt/sqlite/bin:/Users/kyleamazza/.local/bin/redis-cluster-playground:/Library/Frameworks/Mono.framework/Versions/Current/bin/:/Library/Ballerina/bin/:/Users/kyleamazza/.asdf/installs/rust/1.43.1/bin/
 
+# TEMP alias for dev Redis
+export REDIS_DEV="sityo-dev.lyxl8a.clustercfg.usw2.cache.amazonaws.com"
+export PG_DEV="db1-mft-sityo-uswest-dev.clas4gubsacm.us-west-2.rds.amazonaws.com"
+export PG_STG="db1-mft-sityo-uswest-stg.clas4gubsacm.us-west-2.rds.amazonaws.com"
 export PATH="/Users/kyleamazza/.pyenv/bin:$PATH"
 eval "$(pyenv init -)"
 eval "$(pyenv virtualenv-init -)"
+export DENO_INSTALL="/Users/kyleamazza/.deno"
+export PATH="$DENO_INSTALL/bin:$PATH"
 
 # Erlang asdf plugin
 export KERL_CONFIGURE_OPTIONS="--disable-debug --without-javac"
@@ -29,6 +35,9 @@ alias grep='grep --color=auto'
 alias egrep='egrep --color=auto'
 alias fgrep='fgrep --color=auto'
 
+# treeeee
+alias treee='tree -F -a -C --dirsfirst'
+
 # history
 alias hgrep='history | grep'
 
@@ -49,8 +58,15 @@ export BOOKS="~/Documents/books"
 alias books="cd $BOOKS"
 
 # RabbitMQ via Docker
-alias ribbit='docker run -d -p 5672:5672 --name ribbit rabbitmq:3.8.0'
+alias ribbit='docker run -d -p 5672:5672 -p 15672:15672 --name ribbit rabbitmq:3.8-management'
 alias pg='docker run -d -p 5432:5432 --name pg postgres:12.1'
+alias mysquirrel='docker run -d -p 3306:3306 -e MYSQL_ROOT_PASSWORD=mysquirrel --name mysquirrel mysql:8.0.20'
+alias stripo='docker run -d -p 12111-12112:12111-12112 --name stripo stripemock/stripe-mock:latest'
+alias hasaki='docker run -d -p 8080:8080 -e HASURA_GRAPHQL_DATABASE_URL=postgres://postgres:postgres@host.docker.internal:5432/hasaki -e HASURA_GRAPHQL_ENABLE_CONSOLE=true --name hasura hasura/graphql-engine:latest'
+alias prom='docker run --name prom -d -p 9090:9090 prom/prometheus'
+alias redis-cluster='docker run -d -p 7000:7000 -p 7001:7001 -p 7002:7002 --name redis-cluster -e "IP=0.0.0.0" grokzen/redis-cluster:5.0.5'
+alias shhpgdev='ssh -N -L 5433:db1-mft-sityo-uswest-dev.ccyha5oyecbf.us-west-2.rds.amazonaws.com:5432 -i ~/.ssh/"rsa_sityo_tools.pem" ubuntu@ec2-35-162-177-75.us-west-2.compute.amazonaws.com'
+alias shhpgstg='ssh -N -L 5433:db1-mft-sityo-uswest-stg.ccyha5oyecbf.us-west-2.rds.amazonaws.com:5432 -i ~/.ssh/"rsa_sityo_tools.pem" ubuntu@ec2-35-162-177-75.us-west-2.compute.amazonaws.com'
 
 # Yarn because I'm lazy
 alias ya='yarn add'
@@ -58,8 +74,41 @@ alias yad='yarn add -D'
 alias yr='yarn remove'
 alias yi='yarn install'
 
+# ngrok
+alias ng='ngrok http --subdomain=mobileforming $1'
+
+# git
+alias g='git'
+alias bfg='java -jar ~/.local/bin/bfg.jar'
+
+# kubectl bc kubectl is too long to type
+alias kctl='kubectl'
+alias kc='kubectl'
+alias k='kubectl'
+alias kns='kubens'
+alias kn='kubens'
+alias kcx='kubectx'
+alias kx='kubectx'
+
+# Fsharp
+alias fsi='fsharpi'
+alias fsc='fsharpc'
+alias fsnew='dotnet new console -lang "F#" -o '
+
+# GREP
+alias girl='grep -iRl'
+
+# Ballerina
+alias bal='ballerina'
+
+# Android
+alias genDebugKeystore='keytool -genkey -v -keystore debug.keystore -storepass android -alias androiddebugkey -keypass android -keyalg RSA -keysize 2048 -validity 10000'
+
 ### END ALIASES
 ###################
+
+# Git completion (branches, etc)
+test -f ~/.local/bin/.git-completion.bash && . $_
 
 export VISUAL=vim
 export EDITOR="$VISUAL"
@@ -151,8 +200,9 @@ function ps1 {
   fi
 
   set_virtualenv
+  source "/usr/local/opt/kube-ps1/share/kube-ps1.sh"
 
-  PS1="{\[$(tput sgr0)\]\[\033[38;5;10m\]\h\[$(tput sgr0)\]\[\033[38;5;15m\]@\[$(tput sgr0)\]\[\033[38;5;226m\]\u\[$(tput sgr0)\]\[\033[38;5;15m\]}:\w [${SC}\[\e[0m\]]${PYTHON_VIRTUALENV}${BRANCH}\n >>> \[$(tput sgr0)\]"
+  PS1="{\[$(tput sgr0)\]\[\033[38;5;10m\]\h\[$(tput sgr0)\]\[\033[38;5;15m\]@\[$(tput sgr0)\]\[\033[38;5;226m\]\u\[$(tput sgr0)\]\[\033[38;5;15m\]}:\w [${SC}\[\e[0m\]]${PYTHON_VIRTUALENV}${BRANCH}[$(kube_ps1)]\n >>> \[$(tput sgr0)\]"
 }
 ### END PS1 stuff
 
@@ -163,3 +213,8 @@ if which swiftenv > /dev/null; then eval export PATH="/Users/kyleamazza/.swiften
 export PATH="/usr/local/sbin:$PATH"
 
 . $HOME/.asdf/asdf.sh
+
+# opam configuration
+test -r /Users/kyleamazza/.opam/opam-init/init.sh && . /Users/kyleamazza/.opam/opam-init/init.sh > /dev/null 2> /dev/null || true
+
+[ -f ~/.fzf.bash ] && source ~/.fzf.bash

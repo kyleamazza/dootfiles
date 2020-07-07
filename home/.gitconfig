@@ -1,0 +1,68 @@
+# This is Git's per-user configuration file.
+[user]
+# Please adapt and uncomment the following lines:
+name = Kyle Mazza
+email = kyle.mazza@mobileforming.com
+
+[color]
+	all = true
+	ui = true
+[diff]
+	tool = vim
+[difftool "vim"]
+	cmd = vim -d -R "$LOCAL" "$REMOTE"
+[difftool "vim_ignore_whitespace"]
+	cmd = vim -c 'set diffopt+=iwhite' -d -R "$LOCAL" "$REMOTE"
+[difftool]
+	prompt = false
+[core]
+	pager = less -R
+[push]
+	default = simple
+
+[alias]
+    lg = !"git lg1"
+    lg1 = !"git lg1-specific --all"
+    lg2 = !"git lg2-specific --all"
+    lg3 = !"git lg3-specific --all"
+
+    lg1-specific = log --graph --abbrev-commit --decorate --format=format:'%C(bold blue)%h%C(reset) - %C(bold green)(%ar)%C(reset) %C(white)%s%C(reset) %C(dim white)- %an%C(reset)%C(auto)%d%C(reset)'
+    lg2-specific = log --graph --abbrev-commit --decorate --format=format:'%C(bold blue)%h%C(reset) - %C(bold cyan)%aD%C(reset) %C(bold green)(%ar)%C(reset)%C(auto)%d%C(reset)%n''          %C(white)%s%C(reset) %C(dim white)- %an%C(reset)'
+    lg3-specific = log --graph --abbrev-commit --decorate --format=format:'%C(bold blue)%h%C(reset) - %C(bold cyan)%aD%C(reset) %C(bold green)(%ar)%C(reset) %C(bold cyan)(committed: %cD)%C(reset) %C(auto)%d%C(reset)%n''          %C(white)%s%C(reset)%n''          %C(dim white)- %an <%ae> %C(reset) %C(dim white)(committer: %cn <%ce>)%C(reset)'
+
+[alias]
+  parent = "!git show-branch | grep '*' | grep -v \"$(git rev-parse --abbrev-ref HEAD)\" | head -n1 | sed 's/.*\\[\\(.*\\)\\].*/\\1/' | sed 's/[\\^~].*//' #"
+  new = "!f() { curl -s -i -X POST -u \"$(git config user.name)\" https://api.github.com/user/repos -d '{\"name\": \"'$1'\"}'; echo \"$1\"; }; f"
+  delete = "!f() { curl -i -X DELETE -u \"$(git config user.name)\" https://api.github.com/repos/$(git config --global user.name)/$1; }; f"
+  ls = "!f() { curl -s -u \"$(git config user.name)\" https://api.github.com/user/repos?sort=created; }; f | python3 -c \"import sys, json; [print(x['full_name']) for x in json.load(sys.stdin)]\""
+  rename = "!f() { curl -s -o /dev/null -w \"%{http_code}\n\" -X PATCH -u $(git config user.name) https://api.github.com/repos/$(git config --global user.name)/$1 -d '{\"name\":\"'$2'\"}'; }; f"
+
+[alias]
+  c = "commit"
+  ca = "commit --amend"
+  cm = "commit"
+  cv = "commit --verbose"
+  pom = "push origin master"
+  poc = "!f() { git push origin $(git symbolic-ref --short HEAD); }; f"
+  puoc = "!f() { git pull origin $(git symbolic-ref --short HEAD); }; f"
+  s = "status"
+  b = "branch"
+  d = "diff"
+  co = "checkout"
+  cot = "!f() { git fetch &> /dev/null; git checkout --track origin/$1; }; f"
+  addl = "!f() { git ls-files --modified | xargs git add; }; f"
+  addlu = "add ."
+  boom = "!f() { echo \"Resetting files...\"; git reset --hard HEAD; }; f"
+  st = "stash"
+  std = "stash drop"
+  sl = "stash list"
+  slist = "stash list"
+  slook = "stash list"
+  speep = "stash list"
+  sp = "stash pop"
+  spop = "stash pop"
+  spoop = "stash pop"
+  poop = "stash pop"
+
+[core]
+	quotepath = false
